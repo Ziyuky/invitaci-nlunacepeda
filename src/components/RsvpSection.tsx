@@ -12,7 +12,13 @@ const RsvpSection = () => {
     const message = encodeURIComponent(
       `¡Hola! Soy ${name.trim()} y confirmo mi asistencia a los XV años de Luna Cepeda. 🎉🥳`
     );
-    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${message}`, "_blank");
+    const link = document.createElement("a");
+    link.href = `https://wa.me/${WHATSAPP_NUMBER}?text=${message}`;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
     setConfirmed(true);
   };
 

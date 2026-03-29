@@ -38,7 +38,7 @@ const HeroSection = () => {
         <div className="flex justify-center my-4">
           <div className="w-24 h-px bg-gradient-to-r from-transparent via-primary to-transparent" />
         </div>
-        <h1 className="font-script text-gold-gradient text-6xl md:text-8xl glow-gold mb-6">
+        <h1 className="font-script text-gold-gradient text-5xl sm:text-6xl md:text-8xl glow-gold mb-6 px-2 leading-relaxed">
           Luna Cepeda
         </h1>
         <p className="text-foreground/80 text-lg tracking-widest">
