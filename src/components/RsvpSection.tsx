@@ -9,7 +9,7 @@ const RsvpSection = () => {
 
   const getWhatsAppUrl = () => {
     const message = encodeURIComponent(
-      `¡Hola! Soy ${name.trim()} y confirmo mi asistencia a los XV años de Luna Cepeda. 🎉🥳`
+      `¡Hola! Soy ${name.trim()} y confirmo mi asistencia a los XV años de Lunita.`
     );
     return `https://wa.me/${WHATSAPP_NUMBER}?text=${message}`;
   };
