@@ -7,19 +7,11 @@ const RsvpSection = () => {
   const [name, setName] = useState("");
   const [confirmed, setConfirmed] = useState(false);
 
-  const handleConfirm = () => {
-    if (!name.trim()) return;
+  const getWhatsAppUrl = () => {
     const message = encodeURIComponent(
       `¡Hola! Soy ${name.trim()} y confirmo mi asistencia a los XV años de Luna Cepeda. 🎉🥳`
     );
-    const link = document.createElement("a");
-    link.href = `https://wa.me/${WHATSAPP_NUMBER}?text=${message}`;
-    link.target = "_blank";
-    link.rel = "noopener noreferrer";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    setConfirmed(true);
+    return `https://wa.me/${WHATSAPP_NUMBER}?text=${message}`;
   };
 
   return (
@@ -52,13 +44,19 @@ const RsvpSection = () => {
               maxLength={100}
               className="w-full px-4 py-3 bg-input border border-border rounded text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring text-center"
             />
-            <button
-              onClick={handleConfirm}
-              disabled={!name.trim()}
-              className="w-full py-3 shimmer text-primary-foreground font-semibold tracking-widest uppercase text-sm rounded disabled:opacity-40 disabled:cursor-not-allowed transition-opacity"
+            <a
+              href={name.trim() ? getWhatsAppUrl() : undefined}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => {
+                if (name.trim()) setConfirmed(true);
+              }}
+              className={`block w-full py-3 shimmer text-primary-foreground font-semibold tracking-widest uppercase text-sm rounded text-center transition-opacity ${
+                !name.trim() ? "opacity-40 pointer-events-none" : ""
+              }`}
             >
               Confirmar Asistencia
-            </button>
+            </a>
           </div>
         )}
       </div>

@@ -21,7 +21,7 @@ const GallerySection = () => {
               <img
                 src={photo}
                 alt={`Luna Cepeda foto ${i + 1}`}
-                className="w-full h-80 object-cover transition-transform duration-700 group-hover:scale-110"
+                className="w-full h-auto object-contain transition-transform duration-700 group-hover:scale-110"
                 loading="lazy"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
