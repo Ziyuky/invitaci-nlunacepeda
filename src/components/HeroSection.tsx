@@ -2,7 +2,7 @@ import heroBg from "@/assets/hero-bg.jpg";
 
 const HeroSection = () => {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <section className="relative min-h-screen flex items-center justify-center overflow-x-hidden">
       <img
         src={heroBg}
         alt="Luna mirando la luna en una noche estrellada"
@@ -38,7 +38,7 @@ const HeroSection = () => {
         <div className="flex justify-center my-4">
           <div className="w-24 h-px bg-gradient-to-r from-transparent via-primary to-transparent" />
         </div>
-        <h1 className="font-script text-gold-gradient text-5xl sm:text-6xl md:text-8xl glow-gold mb-6 px-2 leading-relaxed">
+        <h1 className="font-script text-gold-gradient text-5xl sm:text-6xl md:text-8xl glow-gold mb-6 px-4 py-4" style={{ lineHeight: '1.4' }}>
           Luna Cepeda
         </h1>
         <p className="text-foreground/80 text-lg tracking-widest">
