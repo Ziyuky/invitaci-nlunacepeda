@@ -45,7 +45,7 @@ const GallerySection = () => {
         <div className="mt-10 px-12">
           <Carousel
             opts={{ loop: true }}
-            plugins={[Autoplay({ delay: 3000, stopOnInteraction: false, stopOnMouseEnter: true })]}
+            plugins={[Autoplay({ delay: 1000, stopOnInteraction: false, stopOnMouseEnter: true })]}
             className="w-full"
           >
             <CarouselContent>

@@ -1,10 +1,12 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
-import { componentTagger } from "lovable-tagger";
 
-// https://vitejs.dev/config/
-export default defineConfig(({ mode }) => ({
+// GitHub Project Pages serves the site at https://<user>.github.io/<repo>/ — set BASE_PATH in CI.
+// For a custom domain or username.github.io root site, use BASE_PATH=/ or omit it.
+// https://vitejs.dev/config/shared-options.html#base
+export default defineConfig({
+  base: process.env.BASE_PATH || "/",
   server: {
     host: "::",
     port: 8080,
@@ -12,11 +14,11 @@ export default defineConfig(({ mode }) => ({
       overlay: false,
     },
   },
-  plugins: [react(), mode === "development" && componentTagger()].filter(Boolean),
+  plugins: [react()],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
     dedupe: ["react", "react-dom", "react/jsx-runtime", "react/jsx-dev-runtime"],
   },
-}));
+});
