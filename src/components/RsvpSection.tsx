@@ -25,7 +25,7 @@ const RsvpSection = () => {
           Espero que puedas acompañarme.
         </p>
         <p className="text-primary text-sm font-medium mb-8">
-          ¡Confirma tu asistencia antes del 15 de abril de 2026!
+          ¡Confirma tu asistencia antes del 1 de mayo de 2026!
         </p>
 
         {confirmed ? (
