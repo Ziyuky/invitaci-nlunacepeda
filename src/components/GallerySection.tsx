@@ -31,7 +31,7 @@ const GallerySection = () => {
     lunaPhoto5, lunaPhoto6, lunaPhoto7, lunaPhoto8,
     lunaPhoto9, lunaPhoto10, lunaPhoto11, lunaPhoto12,
     lunaPhoto13, lunaPhoto14, lunaPhoto15, lunaPhoto16,
-    lunaPhoto17,
+    lunaPhoto17, lunaPhoto18,
   ];
 
   return (
