@@ -15,6 +15,7 @@ import lunaPhoto14 from "@/assets/luna-photo-14.png";
 import lunaPhoto15 from "@/assets/luna-photo-15.png";
 import lunaPhoto16 from "@/assets/luna-photo-16.png";
 import lunaPhoto17 from "@/assets/luna-photo-17.png";
+import lunaPhoto18 from "@/assets/luna-photo-18.png";
 import {
   Carousel,
   CarouselContent,
@@ -30,7 +31,7 @@ const GallerySection = () => {
     lunaPhoto5, lunaPhoto6, lunaPhoto7, lunaPhoto8,
     lunaPhoto9, lunaPhoto10, lunaPhoto11, lunaPhoto12,
     lunaPhoto13, lunaPhoto14, lunaPhoto15, lunaPhoto16,
-    lunaPhoto17,
+    lunaPhoto17, lunaPhoto18,
   ];
 
   return (
