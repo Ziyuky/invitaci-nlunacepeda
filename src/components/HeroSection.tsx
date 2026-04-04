@@ -30,7 +30,7 @@ const HeroSection = () => {
 
       {/* Intro text - positioned between moon and girl's head */}
       <div className="relative z-10 text-center px-6 mt-[18%] sm:mt-[15%] md:mt-[12%]">
-        <p className="text-gold-light text-xs sm:text-sm md:text-base tracking-[0.3em] uppercase mb-3 font-light leading-relaxed max-w-sm sm:max-w-md md:max-w-lg mx-auto">
+        <p className="text-gold-light text-xs sm:text-sm md:text-base tracking-[0.3em] uppercase mb-3 font-light leading-relaxed max-w-md sm:max-w-xl md:max-w-2xl mx-auto">
           Con la bendición de Dios y la compañía de mis padres, tengo el honor de invitarte a celebrar
         </p>
         <h2 className="font-serif-elegant text-primary text-2xl sm:text-3xl md:text-5xl font-semibold tracking-wider">
