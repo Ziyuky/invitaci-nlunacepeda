@@ -17,6 +17,7 @@ const EventSection = () => {
             <div>
               <p className="text-foreground/60 text-xs tracking-[0.2em] uppercase mb-1">Fecha y hora</p>
               <p className="font-serif-elegant text-foreground text-xl">18 de julio de 2026</p>
+              <p className="text-muted-foreground text-sm">7:00 PM</p>
             </div>
           </div>
 

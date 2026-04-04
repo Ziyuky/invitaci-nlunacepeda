@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { CheckCircle } from "lucide-react";
 
-const WHATSAPP_NUMBER = "573115609816";
+const WHATSAPP_NUMBER = "13475287679";
 
 const RsvpSection = () => {
   const [name, setName] = useState("");
