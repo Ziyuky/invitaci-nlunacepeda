@@ -10,6 +10,11 @@ import lunaPhoto9 from "@/assets/luna-photo-9.png";
 import lunaPhoto10 from "@/assets/luna-photo-10.png";
 import lunaPhoto11 from "@/assets/luna-photo-11.png";
 import lunaPhoto12 from "@/assets/luna-photo-12.png";
+import lunaPhoto13 from "@/assets/luna-photo-13.png";
+import lunaPhoto14 from "@/assets/luna-photo-14.png";
+import lunaPhoto15 from "@/assets/luna-photo-15.png";
+import lunaPhoto16 from "@/assets/luna-photo-16.png";
+import lunaPhoto17 from "@/assets/luna-photo-17.png";
 import {
   Carousel,
   CarouselContent,
@@ -17,12 +22,15 @@ import {
   CarouselPrevious,
   CarouselNext,
 } from "@/components/ui/carousel";
+import Autoplay from "embla-carousel-autoplay";
 
 const GallerySection = () => {
   const photos = [
     lunaPhoto1, lunaPhoto2, lunaPhoto3, lunaPhoto4,
     lunaPhoto5, lunaPhoto6, lunaPhoto7, lunaPhoto8,
     lunaPhoto9, lunaPhoto10, lunaPhoto11, lunaPhoto12,
+    lunaPhoto13, lunaPhoto14, lunaPhoto15, lunaPhoto16,
+    lunaPhoto17,
   ];
 
   return (
@@ -34,7 +42,11 @@ const GallerySection = () => {
         </div>
 
         <div className="mt-10 px-12">
-          <Carousel opts={{ loop: true }} className="w-full">
+          <Carousel
+            opts={{ loop: true }}
+            plugins={[Autoplay({ delay: 3000, stopOnInteraction: false, stopOnMouseEnter: true })]}
+            className="w-full"
+          >
             <CarouselContent>
               {photos.map((photo, i) => (
                 <CarouselItem key={i} className="md:basis-1/2 lg:basis-1/3">
