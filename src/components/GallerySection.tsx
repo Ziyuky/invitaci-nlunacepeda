@@ -15,6 +15,7 @@ import lunaPhoto14 from "@/assets/luna-photo-14.png";
 import lunaPhoto15 from "@/assets/luna-photo-15.png";
 import lunaPhoto16 from "@/assets/luna-photo-16.png";
 import lunaPhoto17 from "@/assets/luna-photo-17.png";
+import lunaPhoto18 from "@/assets/luna-photo-18.png";
 import {
   Carousel,
   CarouselContent,
