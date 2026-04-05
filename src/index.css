@@ -121,29 +121,42 @@
   animation: pulse-glow 3s ease-in-out infinite;
 }
 
-/* ── Hero entrance & parallax ────────────────────────── */
+/* ── CSS Parallax (perspective / translateZ) ─────────── */
 
-/* Veil: starts opaque, fades to transparent after load */
-.hero-veil {
-  animation: hero-veil-fade 1.4s cubic-bezier(0.22, 1, 0.36, 1) 0.2s forwards;
+.parallax-container {
+  height: 100svh;
+  overflow-x: hidden;
+  overflow-y: auto;
+  perspective: 1px;
+  perspective-origin: center top;
+  -webkit-overflow-scrolling: touch;
 }
 
-@keyframes hero-veil-fade {
-  from { opacity: 1; }
-  to   { opacity: 0; }
+.parallax-group {
+  position: relative;
+  transform-style: preserve-3d;
 }
 
-/* Background gentle zoom-in on load */
-.hero-entrance-zoom {
-  animation: hero-zoom-in 2.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+/* Back layer: pushed behind the viewport plane → scrolls slower */
+.parallax-layer-back {
+  transform: translateZ(-1px) scale(2);
+  transform-origin: center top;
+  z-index: -1;
 }
 
-@keyframes hero-zoom-in {
-  from { transform: scale(1.12); }
-  to   { transform: scale(1); }
+/* Base layer: sits at the viewport plane → scrolls normally */
+.parallax-layer-base {
+  transform: translateZ(0);
 }
 
-/* Text elements slide up and fade in */
+/* Sections after the hero: flat, no 3D, sit on top */
+.parallax-container > *:not(.parallax-group) {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Hero text entrance ──────────────────────────────── */
+
 .hero-text-reveal {
   opacity: 0;
   animation: hero-text-up 1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
@@ -158,11 +171,4 @@
     opacity: 1;
     transform: translateY(0);
   }
-}
-
-/* Scroll-driven overlay that darkens toward section end */
-.hero-scroll-overlay {
-  background: hsl(var(--background));
-  opacity: var(--overlay-opacity, 0);
-  transition: opacity 0.1s linear;
 }

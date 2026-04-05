@@ -7,7 +7,7 @@ import FooterSection from "@/components/FooterSection";
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-background overflow-x-hidden">
+    <div className="parallax-container bg-background">
       <HeroSection />
       <CountdownSection />
       <EventSection />
