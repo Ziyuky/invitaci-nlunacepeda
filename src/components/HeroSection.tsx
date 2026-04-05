@@ -24,17 +24,26 @@ const HeroSection = () => {
     const scrollEl = section.querySelector<HTMLElement>("[data-scroll]")!;
     const veil = section.querySelector<HTMLElement>("[data-veil]")!;
 
-    // After entrance animations finish, remove classes so JS inline styles take over.
-    // CSS animations override inline styles while active (including forwards fill).
-    const animatedEls = [bg, intro, title, nameEl, scrollEl, veil];
-    animatedEls.forEach((el) => {
-      el.addEventListener(
-        "animationend",
-        () => {
-          el.style.animation = "none";
-        },
-        { once: true }
-      );
+    // Veil: once it fades out, hide it permanently
+    veil.addEventListener("animationend", () => {
+      veil.style.display = "none";
+    }, { once: true });
+
+    // For scroll-controlled elements: lock in the animation's final state,
+    // then remove the animation so JS inline styles can take over.
+    const scrollControlled = [
+      { el: bg, finalOpacity: null, finalTransform: "scale(1)" },
+      { el: intro, finalOpacity: "1", finalTransform: "translateY(0)" },
+      { el: title, finalOpacity: "1", finalTransform: "translateY(0) scale(1)" },
+      { el: nameEl, finalOpacity: "1", finalTransform: null },
+      { el: scrollEl, finalOpacity: "1", finalTransform: null },
+    ];
+    scrollControlled.forEach(({ el, finalOpacity, finalTransform }) => {
+      el.addEventListener("animationend", () => {
+        if (finalOpacity) el.style.opacity = finalOpacity;
+        if (finalTransform) el.style.transform = finalTransform;
+        el.style.animation = "none";
+      }, { once: true });
     });
 
     let raf = 0;
