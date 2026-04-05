@@ -120,3 +120,49 @@
 .animate-pulse-glow {
   animation: pulse-glow 3s ease-in-out infinite;
 }
+
+/* ── Hero entrance & parallax ────────────────────────── */
+
+/* Veil: starts opaque, fades to transparent after load */
+.hero-veil {
+  animation: hero-veil-fade 1.4s cubic-bezier(0.22, 1, 0.36, 1) 0.2s forwards;
+}
+
+@keyframes hero-veil-fade {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+/* Background gentle zoom-in on load */
+.hero-entrance-zoom {
+  animation: hero-zoom-in 2.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes hero-zoom-in {
+  from { transform: scale(1.12); }
+  to   { transform: scale(1); }
+}
+
+/* Text elements slide up and fade in */
+.hero-text-reveal {
+  opacity: 0;
+  animation: hero-text-up 1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes hero-text-up {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Scroll-driven overlay that darkens toward section end */
+.hero-scroll-overlay {
+  background: hsl(var(--background));
+  opacity: var(--overlay-opacity, 0);
+  transition: opacity 0.1s linear;
+}

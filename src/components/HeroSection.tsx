@@ -1,128 +1,165 @@
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef } from "react";
 import heroBg from "@/assets/hero-bg.jpg";
 
-const stars = Array.from({ length: 30 }, (_, i) => ({
+const stars = Array.from({ length: 40 }, (_, i) => ({
   id: i,
-  width: Math.random() * 3 + 1,
-  height: Math.random() * 3 + 1,
-  top: Math.random() * 60,
+  size: Math.random() * 3 + 1,
+  top: Math.random() * 65,
   left: Math.random() * 100,
-  animationDelay: Math.random() * 3,
-  animationDuration: Math.random() * 2 + 2,
+  delay: Math.random() * 4,
+  duration: Math.random() * 2 + 2,
 }));
 
-const clamp = (value: number, min = 0, max = 1) => Math.min(max, Math.max(min, value));
-
 const HeroSection = () => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [scrollProgress, setScrollProgress] = useState(0);
-
-  const handleScroll = useCallback(() => {
-    const container = containerRef.current;
-    if (!container) return;
-
-    const rect = container.getBoundingClientRect();
-    const totalHeight = Math.max(container.offsetHeight - window.innerHeight, 1);
-    const progress = clamp(-rect.top / totalHeight);
-    setScrollProgress(progress);
-  }, []);
+  const sectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    window.addEventListener("resize", handleScroll);
-    handleScroll();
+    const section = sectionRef.current;
+    if (!section) return;
+
+    const sticky = section.querySelector<HTMLElement>("[data-sticky]")!;
+    const bg = section.querySelector<HTMLElement>("[data-bg]")!;
+    const intro = section.querySelector<HTMLElement>("[data-intro]")!;
+    const title = section.querySelector<HTMLElement>("[data-title]")!;
+    const name = section.querySelector<HTMLElement>("[data-name]")!;
+    const scroll = section.querySelector<HTMLElement>("[data-scroll]")!;
+
+    let raf = 0;
+    const update = () => {
+      const rect = section.getBoundingClientRect();
+      const travel = section.offsetHeight - window.innerHeight;
+      const raw = Math.max(0, Math.min(1, -rect.top / travel));
+
+      // Background: subtle parallax shift + gentle zoom
+      bg.style.transform = `translateY(${raw * -40}px) scale(${1 + raw * 0.08})`;
+
+      // Overlay darkens as you scroll to ease transition to next section
+      sticky.style.setProperty("--overlay-opacity", String(raw * 0.35));
+
+      // Intro text: visible at start, fades out as you scroll
+      const introFade = Math.max(0, 1 - raw * 3);
+      intro.style.opacity = String(introFade);
+      intro.style.transform = `translateY(${raw * -50}px)`;
+
+      // "MIS XV AÑOS": fades in as intro fades out
+      const titleIn = Math.max(0, Math.min(1, (raw - 0.12) / 0.18));
+      title.style.opacity = String(titleIn);
+      title.style.transform = `translateY(${(1 - titleIn) * 30}px) scale(${0.92 + titleIn * 0.08})`;
+
+      // Name block: always visible, gets slightly brighter
+      name.style.opacity = String(0.75 + raw * 0.25);
+
+      // Scroll indicator: disappears quickly
+      scroll.style.opacity = String(Math.max(0, 1 - raw * 5));
+
+      raf = 0;
+    };
+
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(update);
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", update);
+    update();
 
     return () => {
-      window.removeEventListener("scroll", handleScroll);
-      window.removeEventListener("resize", handleScroll);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", update);
+      if (raf) cancelAnimationFrame(raf);
     };
-  }, [handleScroll]);
-
-  const introOpacity = clamp(1 - scrollProgress * 2.2, 0, 1);
-  const introTranslate = scrollProgress * -28;
-
-  const titleOpacity = clamp((scrollProgress - 0.18) / 0.2, 0, 1);
-  const titleTranslate = 24 - titleOpacity * 24;
-  const titleScale = 0.94 + titleOpacity * 0.06;
-
-  const bgTranslate = scrollProgress * -10;
-  const bgScale = 1 + scrollProgress * 0.05;
-
-  const nameOpacity = clamp(0.72 + scrollProgress * 0.5, 0.72, 1);
+  }, []);
 
   return (
-    <section ref={containerRef} className="relative h-[220svh] sm:h-[240svh]">
-      <div className="sticky top-0 h-[100svh] w-full overflow-hidden">
+    <section ref={sectionRef} className="relative h-[200svh] sm:h-[220svh]">
+      <div
+        data-sticky
+        className="hero-sticky sticky top-0 h-[100svh] w-full overflow-hidden"
+      >
+        {/* Background image */}
         <img
+          data-bg
           src={heroBg}
           alt="Luna mirando la luna en una noche estrellada"
-          className="absolute inset-0 h-full w-full object-cover will-change-transform"
+          className="absolute inset-0 h-full w-full object-cover will-change-transform hero-entrance-zoom"
           width={1080}
           height={1920}
-          style={{ transform: `translateY(${bgTranslate}px) scale(${bgScale})` }}
         />
 
-        <div className="absolute inset-0 bg-gradient-to-b from-background/35 via-transparent to-background" />
+        {/* Gradient overlays */}
+        <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-transparent to-background" />
+        <div className="hero-scroll-overlay absolute inset-0 pointer-events-none" />
 
+        {/* Entrance veil (fades out on load) */}
+        <div className="hero-veil absolute inset-0 z-30 bg-background pointer-events-none" />
+
+        {/* Stars */}
         {stars.map((star) => (
           <div
             key={star.id}
             className="absolute rounded-full bg-starlight animate-twinkle"
             style={{
-              width: `${star.width}px`,
-              height: `${star.height}px`,
+              width: `${star.size}px`,
+              height: `${star.size}px`,
               top: `${star.top}%`,
               left: `${star.left}%`,
-              animationDelay: `${star.animationDelay}s`,
-              animationDuration: `${star.animationDuration}s`,
+              animationDelay: `${star.delay}s`,
+              animationDuration: `${star.duration}s`,
             }}
           />
         ))}
 
+        {/* Intro text */}
         <div
-          className="absolute inset-x-0 top-[7%] z-10 px-5 text-center sm:top-[8%]"
-          style={{
-            opacity: introOpacity,
-            transform: `translateY(${introTranslate}px)`,
-            willChange: "transform, opacity",
-          }}
+          data-intro
+          className="absolute inset-x-0 top-[7%] z-10 px-5 text-center sm:top-[8%] will-change-transform hero-text-reveal"
+          style={{ animationDelay: "0.8s" }}
         >
-          <p className="mx-auto max-w-[92vw] text-xs font-light uppercase leading-relaxed tracking-[0.22em] text-gold-light sm:max-w-2xl sm:text-sm md:text-base">
+          <p className="mx-auto max-w-[88vw] text-[0.7rem] font-light uppercase leading-relaxed tracking-[0.22em] text-gold-light sm:max-w-2xl sm:text-sm md:text-base">
             Con la bendición de Dios y la compañía de mis padres, tengo el honor de invitarte a celebrar
           </p>
         </div>
 
+        {/* "MIS XV AÑOS" */}
         <div
-          className="absolute inset-x-0 top-[18%] z-10 px-5 text-center sm:top-[21%]"
-          style={{
-            opacity: titleOpacity,
-            transform: `translateY(${titleTranslate}px) scale(${titleScale})`,
-            willChange: "transform, opacity",
-          }}
+          data-title
+          className="absolute inset-x-0 top-[17%] z-10 px-5 text-center sm:top-[20%] will-change-transform hero-text-reveal"
+          style={{ opacity: 0, animationDelay: "1.2s" }}
         >
           <h2 className="font-serif-elegant text-3xl font-semibold tracking-[0.18em] text-primary sm:text-4xl md:text-5xl">
             MIS XV AÑOS
           </h2>
         </div>
 
+        {/* Name + date */}
         <div
-          className="absolute inset-x-0 bottom-[10%] z-10 px-6 text-center sm:bottom-[12%]"
-          style={{ opacity: nameOpacity }}
+          data-name
+          className="absolute inset-x-0 bottom-[10%] z-10 px-6 text-center sm:bottom-[12%] hero-text-reveal"
+          style={{ animationDelay: "1.6s" }}
         >
           <div className="mb-4 flex justify-center">
-            <div className="h-px w-24 bg-gradient-to-r from-transparent via-primary to-transparent" />
+            <div className="h-px w-24 bg-gradient-to-r from-transparent via-primary to-transparent shimmer" />
           </div>
-          <h1 className="font-script glow-gold mb-6 px-4 py-4 text-5xl text-gold-gradient sm:text-6xl md:text-8xl" style={{ lineHeight: "1.4" }}>
+          <h1
+            className="font-script glow-gold mb-6 px-4 py-4 text-5xl text-gold-gradient sm:text-6xl md:text-8xl"
+            style={{ lineHeight: "1.4" }}
+          >
             Luna Cepeda
           </h1>
-          <p className="text-lg tracking-widest text-foreground/80">18 de julio de 2026 · 7:00 PM</p>
+          <p className="text-base tracking-widest text-foreground/80 sm:text-lg">
+            18 de julio de 2026 · 7:00 PM
+          </p>
         </div>
 
+        {/* Scroll indicator */}
         <div
-          className="absolute inset-x-0 bottom-4 z-10 flex flex-col items-center"
-          style={{ opacity: clamp(1 - scrollProgress * 4, 0, 1) }}
+          data-scroll
+          className="absolute inset-x-0 bottom-4 z-10 flex flex-col items-center hero-text-reveal"
+          style={{ animationDelay: "2.2s" }}
         >
-          <p className="mb-2 text-xs uppercase tracking-widest text-foreground/50">Desliza</p>
+          <p className="mb-2 text-xs uppercase tracking-widest text-foreground/50">
+            Desliza
+          </p>
           <div className="flex h-8 w-5 items-start justify-center rounded-full border border-foreground/30 p-1">
             <div className="h-2 w-1 animate-bounce rounded-full bg-primary" />
           </div>
