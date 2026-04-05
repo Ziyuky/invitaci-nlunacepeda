@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback, useMemo } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import heroBg from "@/assets/hero-bg.jpg";
 
 const stars = Array.from({ length: 30 }, (_, i) => ({
@@ -11,6 +11,8 @@ const stars = Array.from({ length: 30 }, (_, i) => ({
   animationDuration: Math.random() * 2 + 2,
 }));
 
+const clamp = (value: number, min = 0, max = 1) => Math.min(max, Math.max(min, value));
+
 const HeroSection = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [scrollProgress, setScrollProgress] = useState(0);
@@ -18,136 +20,115 @@ const HeroSection = () => {
   const handleScroll = useCallback(() => {
     const container = containerRef.current;
     if (!container) return;
+
     const rect = container.getBoundingClientRect();
-    const totalHeight = container.offsetHeight - window.innerHeight;
-    if (totalHeight <= 0) return;
-    const progress = Math.max(0, Math.min(1, -rect.top / totalHeight));
+    const totalHeight = Math.max(container.offsetHeight - window.innerHeight, 1);
+    const progress = clamp(-rect.top / totalHeight);
     setScrollProgress(progress);
   }, []);
 
   useEffect(() => {
-    // Listen on multiple possible scroll targets
-    const targets = [window, document, document.documentElement];
-    targets.forEach((t) => t.addEventListener("scroll", handleScroll, { passive: true }));
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", handleScroll);
     handleScroll();
+
     return () => {
-      targets.forEach((t) => t.removeEventListener("scroll", handleScroll));
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
     };
   }, [handleScroll]);
 
-  // Phases with smoother transitions
-  const introOpacity = scrollProgress < 0.05 ? 0
-    : scrollProgress < 0.2 ? (scrollProgress - 0.05) / 0.15
-    : scrollProgress < 0.45 ? 1
-    : scrollProgress < 0.6 ? 1 - (scrollProgress - 0.45) / 0.15
-    : 0;
+  const introOpacity = clamp(1 - scrollProgress * 2.2, 0, 1);
+  const introTranslate = scrollProgress * -28;
 
-  const titleOpacity = scrollProgress < 0.12 ? 0
-    : scrollProgress < 0.28 ? (scrollProgress - 0.12) / 0.16
-    : scrollProgress < 0.5 ? 1
-    : scrollProgress < 0.65 ? 1 - (scrollProgress - 0.5) / 0.15
-    : 0;
+  const titleOpacity = clamp((scrollProgress - 0.18) / 0.2, 0, 1);
+  const titleTranslate = 24 - titleOpacity * 24;
+  const titleScale = 0.94 + titleOpacity * 0.06;
 
-  const nameOpacity = scrollProgress < 0.5 ? 0
-    : scrollProgress < 0.7 ? (scrollProgress - 0.5) / 0.2
-    : 1;
+  const bgTranslate = scrollProgress * -10;
+  const bgScale = 1 + scrollProgress * 0.05;
 
-  const bgScale = 1 + scrollProgress * 0.08;
+  const nameOpacity = clamp(0.72 + scrollProgress * 0.5, 0.72, 1);
 
   return (
-    <div ref={containerRef} className="relative" style={{ height: "300svh" }}>
-      {/* Sticky container */}
+    <section ref={containerRef} className="relative h-[220svh] sm:h-[240svh]">
       <div className="sticky top-0 h-[100svh] w-full overflow-hidden">
-        {/* Background */}
         <img
           src={heroBg}
           alt="Luna mirando la luna en una noche estrellada"
-          className="absolute inset-0 w-full h-full object-cover will-change-transform origin-center"
+          className="absolute inset-0 h-full w-full object-cover will-change-transform"
           width={1080}
           height={1920}
-          style={{ transform: `scale(${bgScale})` }}
+          style={{ transform: `translateY(${bgTranslate}px) scale(${bgScale})` }}
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-transparent to-background" />
 
-        {/* Stars */}
+        <div className="absolute inset-0 bg-gradient-to-b from-background/35 via-transparent to-background" />
+
         {stars.map((star) => (
           <div
             key={star.id}
             className="absolute rounded-full bg-starlight animate-twinkle"
             style={{
-              width: star.width + "px",
-              height: star.height + "px",
-              top: star.top + "%",
-              left: star.left + "%",
-              animationDelay: star.animationDelay + "s",
-              animationDuration: star.animationDuration + "s",
+              width: `${star.width}px`,
+              height: `${star.height}px`,
+              top: `${star.top}%`,
+              left: `${star.left}%`,
+              animationDelay: `${star.animationDelay}s`,
+              animationDuration: `${star.animationDuration}s`,
             }}
           />
         ))}
 
-        {/* Intro text */}
         <div
-          className="absolute inset-x-0 top-[8%] z-10 text-center px-4"
+          className="absolute inset-x-0 top-[7%] z-10 px-5 text-center sm:top-[8%]"
           style={{
             opacity: introOpacity,
-            transform: `translateY(${(1 - introOpacity) * 25}px)`,
-            willChange: "opacity, transform",
+            transform: `translateY(${introTranslate}px)`,
+            willChange: "transform, opacity",
           }}
         >
-          <p className="text-gold-light text-xs sm:text-sm tracking-[0.2em] uppercase font-light leading-relaxed max-w-[90vw] mx-auto">
+          <p className="mx-auto max-w-[92vw] text-xs font-light uppercase leading-relaxed tracking-[0.22em] text-gold-light sm:max-w-2xl sm:text-sm md:text-base">
             Con la bendición de Dios y la compañía de mis padres, tengo el honor de invitarte a celebrar
           </p>
         </div>
 
-        {/* MIS XV AÑOS */}
         <div
-          className="absolute inset-x-0 top-[18%] z-10 text-center px-4"
+          className="absolute inset-x-0 top-[18%] z-10 px-5 text-center sm:top-[21%]"
           style={{
             opacity: titleOpacity,
-            transform: `translateY(${(1 - titleOpacity) * 25}px)`,
-            willChange: "opacity, transform",
+            transform: `translateY(${titleTranslate}px) scale(${titleScale})`,
+            willChange: "transform, opacity",
           }}
         >
-          <h2 className="font-serif-elegant text-primary text-3xl sm:text-4xl md:text-5xl font-semibold tracking-wider">
+          <h2 className="font-serif-elegant text-3xl font-semibold tracking-[0.18em] text-primary sm:text-4xl md:text-5xl">
             MIS XV AÑOS
           </h2>
         </div>
 
-        {/* Name and date */}
         <div
-          className="absolute inset-x-0 bottom-[10%] z-10 text-center px-6"
-          style={{
-            opacity: nameOpacity,
-            transform: `translateY(${(1 - nameOpacity) * 30}px)`,
-            willChange: "opacity, transform",
-          }}
+          className="absolute inset-x-0 bottom-[10%] z-10 px-6 text-center sm:bottom-[12%]"
+          style={{ opacity: nameOpacity }}
         >
-          <div className="flex justify-center mb-4">
-            <div className="w-24 h-px bg-gradient-to-r from-transparent via-primary to-transparent" />
+          <div className="mb-4 flex justify-center">
+            <div className="h-px w-24 bg-gradient-to-r from-transparent via-primary to-transparent" />
           </div>
-          <h1
-            className="font-script text-gold-gradient text-5xl sm:text-6xl md:text-8xl glow-gold mb-6 px-4 py-4"
-            style={{ lineHeight: "1.4" }}
-          >
+          <h1 className="font-script glow-gold mb-6 px-4 py-4 text-5xl text-gold-gradient sm:text-6xl md:text-8xl" style={{ lineHeight: "1.4" }}>
             Luna Cepeda
           </h1>
-          <p className="text-foreground/80 text-lg tracking-widest">
-            18 de julio de 2026 · 7:00 PM
-          </p>
+          <p className="text-lg tracking-widest text-foreground/80">18 de julio de 2026 · 7:00 PM</p>
         </div>
 
-        {/* Scroll indicator - visible at start */}
         <div
-          className="absolute bottom-4 inset-x-0 z-10 flex flex-col items-center"
-          style={{ opacity: Math.max(0, 1 - scrollProgress * 5) }}
+          className="absolute inset-x-0 bottom-4 z-10 flex flex-col items-center"
+          style={{ opacity: clamp(1 - scrollProgress * 4, 0, 1) }}
         >
-          <p className="text-foreground/50 text-xs tracking-widest uppercase mb-2">Desliza</p>
-          <div className="w-5 h-8 border border-foreground/30 rounded-full flex items-start justify-center p-1">
-            <div className="w-1 h-2 bg-primary rounded-full animate-bounce" />
+          <p className="mb-2 text-xs uppercase tracking-widest text-foreground/50">Desliza</p>
+          <div className="flex h-8 w-5 items-start justify-center rounded-full border border-foreground/30 p-1">
+            <div className="h-2 w-1 animate-bounce rounded-full bg-primary" />
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 
