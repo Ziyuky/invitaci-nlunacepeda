@@ -17,12 +17,25 @@ const HeroSection = () => {
     const section = sectionRef.current;
     if (!section) return;
 
-    const sticky = section.querySelector<HTMLElement>("[data-sticky]")!;
     const bg = section.querySelector<HTMLElement>("[data-bg]")!;
     const intro = section.querySelector<HTMLElement>("[data-intro]")!;
     const title = section.querySelector<HTMLElement>("[data-title]")!;
-    const name = section.querySelector<HTMLElement>("[data-name]")!;
-    const scroll = section.querySelector<HTMLElement>("[data-scroll]")!;
+    const nameEl = section.querySelector<HTMLElement>("[data-name]")!;
+    const scrollEl = section.querySelector<HTMLElement>("[data-scroll]")!;
+    const veil = section.querySelector<HTMLElement>("[data-veil]")!;
+
+    // After entrance animations finish, remove classes so JS inline styles take over.
+    // CSS animations override inline styles while active (including forwards fill).
+    const animatedEls = [bg, intro, title, nameEl, scrollEl, veil];
+    animatedEls.forEach((el) => {
+      el.addEventListener(
+        "animationend",
+        () => {
+          el.style.animation = "none";
+        },
+        { once: true }
+      );
+    });
 
     let raf = 0;
     const update = () => {
@@ -30,27 +43,22 @@ const HeroSection = () => {
       const travel = section.offsetHeight - window.innerHeight;
       const raw = Math.max(0, Math.min(1, -rect.top / travel));
 
-      // Background: subtle parallax shift + gentle zoom
-      bg.style.transform = `translateY(${raw * -40}px) scale(${1 + raw * 0.08})`;
+      bg.style.transform = `translate3d(0, ${raw * -40}px, 0) scale(${1 + raw * 0.08})`;
 
-      // Overlay darkens as you scroll to ease transition to next section
-      sticky.style.setProperty("--overlay-opacity", String(raw * 0.35));
+      const overlay = section.querySelector<HTMLElement>("[data-overlay]");
+      if (overlay) overlay.style.opacity = String(raw * 0.4);
 
-      // Intro text: visible at start, fades out as you scroll
       const introFade = Math.max(0, 1 - raw * 3);
       intro.style.opacity = String(introFade);
-      intro.style.transform = `translateY(${raw * -50}px)`;
+      intro.style.transform = `translate3d(0, ${raw * -50}px, 0)`;
 
-      // "MIS XV AÑOS": fades in as intro fades out
       const titleIn = Math.max(0, Math.min(1, (raw - 0.12) / 0.18));
       title.style.opacity = String(titleIn);
-      title.style.transform = `translateY(${(1 - titleIn) * 30}px) scale(${0.92 + titleIn * 0.08})`;
+      title.style.transform = `translate3d(0, ${(1 - titleIn) * 30}px, 0) scale(${0.92 + titleIn * 0.08})`;
 
-      // Name block: always visible, gets slightly brighter
-      name.style.opacity = String(0.75 + raw * 0.25);
+      nameEl.style.opacity = String(0.75 + raw * 0.25);
 
-      // Scroll indicator: disappears quickly
-      scroll.style.opacity = String(Math.max(0, 1 - raw * 5));
+      scrollEl.style.opacity = String(Math.max(0, 1 - raw * 5));
 
       raf = 0;
     };
@@ -72,10 +80,7 @@ const HeroSection = () => {
 
   return (
     <section ref={sectionRef} className="relative h-[200svh] sm:h-[220svh]">
-      <div
-        data-sticky
-        className="hero-sticky sticky top-0 h-[100svh] w-full overflow-hidden"
-      >
+      <div className="sticky top-0 h-[100svh] w-full overflow-hidden">
         {/* Background image */}
         <img
           data-bg
@@ -86,12 +91,21 @@ const HeroSection = () => {
           height={1920}
         />
 
-        {/* Gradient overlays */}
+        {/* Gradient overlay (static) */}
         <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-transparent to-background" />
-        <div className="hero-scroll-overlay absolute inset-0 pointer-events-none" />
 
-        {/* Entrance veil (fades out on load) */}
-        <div className="hero-veil absolute inset-0 z-30 bg-background pointer-events-none" />
+        {/* Scroll-driven dark overlay */}
+        <div
+          data-overlay
+          className="absolute inset-0 pointer-events-none"
+          style={{ background: "hsl(222 47% 8%)", opacity: 0 }}
+        />
+
+        {/* Entrance veil */}
+        <div
+          data-veil
+          className="hero-veil absolute inset-0 z-30 bg-background pointer-events-none"
+        />
 
         {/* Stars */}
         {stars.map((star) => (
