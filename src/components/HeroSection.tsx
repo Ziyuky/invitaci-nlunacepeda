@@ -40,23 +40,23 @@ const HeroSection = () => {
       </div>
 
       {/* ── Foreground layer: text content (scrolls at normal speed) ── */}
-      <div className="parallax-layer-base relative z-10 flex h-full flex-col items-center justify-between py-[8svh] pb-[4svh]">
-        {/* Intro */}
-        <div className="text-center px-5 hero-text-reveal" style={{ animationDelay: "0.6s" }}>
+      <div className="parallax-layer-base relative z-10 h-full">
+        {/* Intro — above the moon */}
+        <div className="absolute inset-x-0 top-[3%] text-center px-5 hero-text-reveal" style={{ animationDelay: "0.6s" }}>
           <p className="mx-auto max-w-[88vw] text-[0.7rem] font-light uppercase leading-relaxed tracking-[0.22em] text-gold-light sm:max-w-2xl sm:text-sm md:text-base">
             Con la bendición de Dios y la compañía de mis padres, tengo el honor de invitarte a celebrar
           </p>
         </div>
 
-        {/* Title */}
-        <div className="text-center px-5 hero-text-reveal" style={{ animationDelay: "1s" }}>
+        {/* Title — between the moon and the girl */}
+        <div className="absolute inset-x-0 top-[42%] text-center px-5 hero-text-reveal" style={{ animationDelay: "1s" }}>
           <h2 className="font-serif-elegant text-3xl font-semibold tracking-[0.18em] text-primary sm:text-4xl md:text-5xl">
             MIS XV AÑOS
           </h2>
         </div>
 
-        {/* Name + date */}
-        <div className="text-center px-6 hero-text-reveal" style={{ animationDelay: "1.4s" }}>
+        {/* Name + date — over the lower area */}
+        <div className="absolute inset-x-0 bottom-[10%] text-center px-6 hero-text-reveal" style={{ animationDelay: "1.4s" }}>
           <div className="mb-4 flex justify-center">
             <div className="h-px w-24 bg-gradient-to-r from-transparent via-primary to-transparent shimmer" />
           </div>
@@ -72,7 +72,7 @@ const HeroSection = () => {
         </div>
 
         {/* Scroll indicator */}
-        <div className="flex flex-col items-center hero-text-reveal" style={{ animationDelay: "2s" }}>
+        <div className="absolute inset-x-0 bottom-[2%] flex flex-col items-center hero-text-reveal" style={{ animationDelay: "2s" }}>
           <p className="mb-2 text-xs uppercase tracking-widest text-foreground/50">Desliza</p>
           <div className="flex h-8 w-5 items-start justify-center rounded-full border border-foreground/30 p-1">
             <div className="h-2 w-1 animate-bounce rounded-full bg-primary" />
