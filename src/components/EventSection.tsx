@@ -19,6 +19,10 @@ const EventSection = () => {
               <p className="font-serif-elegant text-foreground text-xl">18 de julio de 2026</p>
               <p className="text-muted-foreground text-sm">7:00 PM</p>
             </div>
+            <div>
+              <p className="text-foreground/60 text-xs tracking-[0.2em] uppercase mb-1">Código de vestimenta</p>
+              <p className="font-serif-elegant text-foreground text-xl">Traje Formal</p>
+            </div>
           </div>
 
           <div className="flex flex-col items-center gap-3">
@@ -30,6 +34,10 @@ const EventSection = () => {
               <p className="font-serif-elegant text-foreground text-xl">Finca La Esmeralda</p>
               <p className="text-muted-foreground text-sm">Guaduas, Cundinamarca</p>
             </div>
+          </div>
+
+          <div>
+            <p className="text-foreground/60 text-xs tracking-[0.2em] uppercase mb-1">Lluvia de sobres</p>
           </div>
 
           <a
